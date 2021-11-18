@@ -3,6 +3,9 @@
 // Job:   holds the Car definitions 
 //////////////////////////////////////////////////////////////////////////////////
 #include "Car.h"
+
+#include <functional>
+
 #include "Station.h"
 
 using namespace std;
@@ -57,6 +60,13 @@ void Car::startCar(void testACar(Car* car))
 	// TODO: Start the thread that will be used for the car
 	//(these will be joinable threads)
 	///////////////////////////////////////////////////////////////////////////
+
+	std::thread spawn(&testACar, this);
+	this->thread = &spawn;
+	spawn.join();
+	
+
+	
 }
 
 void Car::waitForCarToStop(void)
@@ -64,6 +74,8 @@ void Car::waitForCarToStop(void)
 	///////////////////////////////////////////////////////////////////////////
 	// TODO: stop and clean up the car threads
 	///////////////////////////////////////////////////////////////////////////
+	delete this;
+
 }
 
 void Car::setStationToUse(Station *myStation)
