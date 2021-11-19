@@ -58,7 +58,6 @@ int Station::fillUp()
 			{
 				
 				freeMask |= (1 << i);
-				pumps[i].fillTankUp();
 				this->getstationMutex()->unlock();
 				break;
 				
@@ -70,7 +69,7 @@ int Station::fillUp()
 	}
 
 	
-	
+	pumps[i].fillTankUp();
 	this->getstationMutex()->lock();
 	freeMask &= ~(1 << i);
 	this->getstationMutex()->unlock();

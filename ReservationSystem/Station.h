@@ -26,7 +26,7 @@ private:
 	int carsInStation;							// number of cars that will visit the station
 	std::mutex* stationMutex;					// mutex for protecting memory in the station
 	std::condition_variable* stationCondition;	// cv used for scheduling in the station
-
+	
 public:
 	//constructor and destructor
 	Station(void);
