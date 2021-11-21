@@ -49,36 +49,42 @@ int Station::fillUp()
 	// NOTE: You may NOT modify any of the code outside of the TODOs or add any global or static
 	//   variables UNLESS it's required by your algorithm for #5 above.
 	/////////////////////////////////////////////////////////////////////////////////////////////
-	
-	int i = 0;
-	while (true)
-	{
-			this->getstationMutex()->lock();
+
+		for (int i = 0; i < pumpsInStation; ++i)
+		{
+			
 			if ((freeMask & (1 << i)) == 0)
 			{
-				
+				this->getstationMutex()->lock();
 				freeMask |= (1 << i);
-				pumps[i].fillTankUp();
 				this->getstationMutex()->unlock();
-				break;
-				
 
+
+				pumps[i].fillTankUp();
+			
+
+				this->getstationMutex()->lock();
+				freeMask &= ~(1 << i);
+				this->getstationMutex()->unlock();
+				int a = carsInStation;
+				int b = pumpsInStation;
+				int c = 30; //seconds to take pumping
+				int x; // holding int
+
+				x = a / b;
+
+				x *= c;
+
+
+				std::this_thread::sleep_for(std::chrono::seconds());
+				return 1;
 			}
-			this->getstationMutex()->unlock();
-			i++;
-		
-	}
+
+		}
+	
 
 	
-	
-	this->getstationMutex()->lock();
-	freeMask &= ~(1 << i);
-	this->getstationMutex()->unlock();
 
-	static std::mutex waiter;
-	std::unique_lock<std::mutex> lock(waiter);
-	this->getStationCondition()->wait(lock, [&]() {return pumps->getFillCount() == this->getCarsInStation(); });
-	lock.unlock();
 
 	return 0;
 }

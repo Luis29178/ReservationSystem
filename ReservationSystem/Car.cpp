@@ -61,9 +61,11 @@ void Car::startCar(void testACar(Car* car))
 	//(these will be joinable threads)
 	///////////////////////////////////////////////////////////////////////////
 
-	std::thread spawn(testACar, this);
-	this->thread = &spawn;
-	this->thread->detach();
+	
+	this->thread = new std::thread(testACar, this);
+	
+	
+	
 
 	
 }
@@ -73,8 +75,10 @@ void Car::waitForCarToStop(void)
 	///////////////////////////////////////////////////////////////////////////
 	// TODO: stop and clean up the car threads
 	///////////////////////////////////////////////////////////////////////////
+	this->thread->join();
+	delete thread;
 
-
+	
 }
 
 void Car::setStationToUse(Station *myStation)
