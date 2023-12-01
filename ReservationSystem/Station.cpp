@@ -50,38 +50,27 @@ int Station::fillUp()
 	//   variables UNLESS it's required by your algorithm for #5 above.
 	/////////////////////////////////////////////////////////////////////////////////////////////
 
-		for (int i = 0; i < pumpsInStation; ++i)
+	for (int i = 0; i < pumpsInStation; ++i)
+	{
+		this->getstationMutex()->lock();
+		if ((freeMask & (1 << i)) == 0)
 		{
-			
-			if ((freeMask & (1 << i)) == 0)
-			{
-				this->getstationMutex()->lock();
-				freeMask |= (1 << i);
-				this->getstationMutex()->unlock();
 
+			freeMask |= (1 << i);
+			this->getstationMutex()->unlock();
 
-				pumps[i].fillTankUp();
-			
+			pumps[i].fillTankUp();
 
-				this->getstationMutex()->lock();
-				freeMask &= ~(1 << i);
-				this->getstationMutex()->unlock();
-				int a = carsInStation;
-				int b = pumpsInStation;
-				int c = 30; //seconds to take pumping
-				int x; // holding int
+			this->getstationMutex()->lock();
+			freeMask &= ~(1 << i);
+			this->getstationMutex()->unlock();
 
-				x = a / b;
-
-				x *= c;
-
-
-				std::this_thread::sleep_for(std::chrono::seconds());
-				return 1;
-			}
-
+			std::this_thread::sleep_for(std::chrono::seconds(150));
+			return 1;
 		}
-	
+		this->getstationMutex()->unlock();
+
+	}
 
 	
 
